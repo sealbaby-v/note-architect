@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>note-architect</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>note-architect</h1>
+      <p>長編小説執筆補助（実装ベース）</p>
+    </header>
+
+    <main class="app-grid">
+      <aside class="sidebar">
+        <button class="tab-btn active" data-tab="scenes">執筆</button>
+        <button class="tab-btn" data-tab="characters">キャラクター</button>
+        <button class="tab-btn" data-tab="world">世界観</button>
+        <button class="tab-btn" data-tab="timeline">年表</button>
+        <button class="tab-btn" data-tab="export">データ管理</button>
+      </aside>
+
+      <section class="content">
+        <div id="tab-scenes" class="tab active">
+          <h2>シーン管理</h2>
+          <input id="scene-title" placeholder="シーンタイトル" />
+          <textarea id="scene-content" placeholder="本文"></textarea>
+          <button id="save-scene">シーン保存</button>
+          <ul id="scene-list"></ul>
+        </div>
+
+        <div id="tab-characters" class="tab">
+          <h2>キャラクター管理</h2>
+          <input id="character-name" placeholder="名前" />
+          <input id="character-role" placeholder="役割" />
+          <textarea id="character-note" placeholder="口調・設定メモ"></textarea>
+          <button id="save-character">キャラクター保存</button>
+          <ul id="character-list"></ul>
+        </div>
+
+        <div id="tab-world" class="tab">
+          <h2>世界観エントリ</h2>
+          <select id="world-type">
+            <option value="PLACE">地名</option>
+            <option value="ORGANIZATION">組織</option>
+            <option value="ITEM">アイテム</option>
+            <option value="RULE">ルール</option>
+            <option value="TERM">用語</option>
+          </select>
+          <input id="world-name" placeholder="名称" />
+          <textarea id="world-description" placeholder="説明"></textarea>
+          <button id="save-world">世界観保存</button>
+          <ul id="world-list"></ul>
+        </div>
+
+        <div id="tab-timeline" class="tab">
+          <h2>年表イベント</h2>
+          <input id="timeline-at" placeholder="時点（例: 第3章）" />
+          <input id="timeline-label" placeholder="イベント名" />
+          <textarea id="timeline-description" placeholder="詳細"></textarea>
+          <button id="save-timeline">イベント保存</button>
+          <ul id="timeline-list"></ul>
+        </div>
+
+        <div id="tab-export" class="tab">
+          <h2>データ管理</h2>
+          <p>JSONでバックアップ / 復元できます。</p>
+          <div class="actions-row">
+            <button id="export-json">JSONエクスポート</button>
+            <label class="file-label">JSONインポート<input id="import-json" type="file" accept="application/json" /></label>
+            <button id="clear-all" class="danger">全データ削除</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
