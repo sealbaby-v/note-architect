@@ -1,0 +1,31 @@
+const KEY='note-architect-v4';
+const state=load();
+bindTabs();bindCRUD();bindAI();bindData();renderAll();
+function base(){return{chapters:[],scenes:[],characters:[],worldEntries:[],timelineEvents:[]}};
+function load(){try{return{...base(),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{return base();}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+const id=()=>crypto.randomUUID();const v=(x)=>document.getElementById(x).value.trim();
+function bindTabs(){document.querySelectorAll('.tab-btn').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab-btn,.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(`tab-${b.dataset.tab}`).classList.add('active');});}
+function bindCRUD(){
+  document.getElementById('save-chapter').onclick=()=>{const title=v('chapter-title');if(!title)return;state.chapters.push({id:id(),title});save();document.getElementById('chapter-title').value='';renderChapters();renderSceneChapterSelect();};
+  document.getElementById('save-scene').onclick=()=>{const title=v('scene-title'),content=v('scene-content'),chapterId=document.getElementById('scene-chapter').value;if(!title||!content)return;state.scenes.push({id:id(),title,content,chapterId});save();document.getElementById('scene-title').value='';document.getElementById('scene-content').value='';renderScenes();};
+  document.getElementById('save-character').onclick=()=>push('characters',{name:v('character-name'),role:v('character-role'),note:v('character-note')},['character-name','character-role','character-note'],renderCharacters);
+  document.getElementById('save-world').onclick=()=>push('worldEntries',{type:document.getElementById('world-type').value,name:v('world-name'),description:v('world-description')},['world-name','world-description'],renderWorld);
+  document.getElementById('save-timeline').onclick=()=>push('timelineEvents',{eventAt:v('timeline-at'),label:v('timeline-label'),description:v('timeline-description')},['timeline-at','timeline-label','timeline-description'],renderTimeline);
+}
+function push(bucket,obj,clearIds,rerender){if(Object.values(obj).every(x=>!x))return;state[bucket].push({id:id(),...obj});save();clearIds.forEach(i=>document.getElementById(i).value='');rerender();}
+function row(label,type,x){return`<div class="item-header"><strong>${esc(label)}</strong><span><button data-a="up" data-t="${type}" data-id="${x.id}">↑</button><button data-a="down" data-t="${type}" data-id="${x.id}">↓</button><button data-a="del" data-t="${type}" data-id="${x.id}" class="danger-inline">削除</button></span></div>`}
+function bindList(type,arr,rer){document.querySelectorAll(`button[data-t="${type}"]`).forEach(b=>b.onclick=()=>{const i=arr.findIndex(x=>x.id===b.dataset.id);if(i<0)return; if(b.dataset.a==='del')arr.splice(i,1); if(b.dataset.a==='up'&&i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]]; if(b.dataset.a==='down'&&i<arr.length-1)[arr[i+1],arr[i]]=[arr[i],arr[i+1]]; save(); rer(); if(type==='chapter') renderSceneChapterSelect();});}
+function renderChapters(){const el=document.getElementById('chapter-list');el.innerHTML=state.chapters.map(c=>`<li>${row(c.title,'chapter',c)}</li>`).join('');bindList('chapter',state.chapters,renderChapters);}
+function renderScenes(){const el=document.getElementById('scene-list');el.innerHTML=state.scenes.map(s=>`<li>${row(`${s.title} (${chapterName(s.chapterId)})`,'scene',s)}<div class='muted'>${esc(s.content.slice(0,80))}</div></li>`).join('');bindList('scene',state.scenes,renderScenes);}
+function renderSceneChapterSelect(){const s=document.getElementById('scene-chapter');s.innerHTML=state.chapters.map(c=>`<option value='${c.id}'>${esc(c.title)}</option>`).join('')||"<option value=''>章なし</option>";}
+function chapterName(id){return state.chapters.find(c=>c.id===id)?.title||'未所属';}
+function renderCharacters(){const el=document.getElementById('character-list');el.innerHTML=state.characters.map(x=>`<li>${row(x.name,'character',x)}<div class='muted'>${esc(x.role||'')} ${esc(x.note||'')}</div></li>`).join('');bindList('character',state.characters,renderCharacters);}
+function renderWorld(){const el=document.getElementById('world-list');el.innerHTML=state.worldEntries.map(x=>`<li>${row(`[${x.type}] ${x.name}`,'world',x)}<div class='muted'>${esc(x.description||'')}</div></li>`).join('');bindList('world',state.worldEntries,renderWorld);}
+function renderTimeline(){const el=document.getElementById('timeline-list');el.innerHTML=state.timelineEvents.map(x=>`<li>${row(`${x.eventAt} ${x.label}`,'timeline',x)}<div class='muted'>${esc(x.description||'')}</div></li>`).join('');bindList('timeline',state.timelineEvents,renderTimeline);}
+async function ai(path,payload){const r=await fetch(path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});return r.json();}
+function bindAI(){document.getElementById('ai-plot').onclick=async()=>out(await ai('/api/ai/plot',{summary:v('ai-input')}));document.getElementById('ai-rewrite').onclick=async()=>out(await ai('/api/ai/rewrite',{text:v('ai-input')}));document.getElementById('ai-critique').onclick=async()=>out(await ai('/api/ai/critique',{text:v('ai-input')}));}
+function out(x){document.getElementById('ai-output').textContent=JSON.stringify(x,null,2);}
+function bindData(){document.getElementById('export-json').onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='note-architect-backup.json';a.click();};document.getElementById('import-json').onchange=async(e)=>{const f=e.target.files?.[0];if(!f)return;Object.assign(state,base(),JSON.parse(await f.text()));save();renderAll();};document.getElementById('clear-all').onclick=()=>{Object.assign(state,base());save();renderAll();};}
+function renderAll(){renderChapters();renderSceneChapterSelect();renderScenes();renderCharacters();renderWorld();renderTimeline();}
+function esc(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');}
