@@ -1,24 +1,15 @@
-body { margin: 0; font-family: sans-serif; background: #f4f6fb; color: #1f2430; }
-.topbar { background: #1d2a44; color: white; padding: 1rem 1.5rem; }
-.topbar h1 { margin: 0; font-size: 1.2rem; }
-.topbar p { margin: .25rem 0 0; font-size: .9rem; opacity: .9; }
-.app-grid { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 78px); }
-.sidebar { background: #eef1f8; padding: 1rem; border-right: 1px solid #d8deea; display: flex; flex-direction: column; gap: .5rem; }
-.tab-btn { background: white; border: 1px solid #cfd7e8; padding: .6rem .8rem; border-radius: 8px; cursor: pointer; text-align: left; }
-.tab-btn.active { background: #2b63d9; color: white; border-color: #2b63d9; }
-.content { padding: 1.2rem; }
-.tab { display: none; background: white; border: 1px solid #dde3ef; border-radius: 10px; padding: 1rem; }
-.tab.active { display: block; }
-input, textarea, select, button { display: block; width: 100%; margin-top: .55rem; margin-bottom: .55rem; padding: .55rem; font-size: .95rem; }
-textarea { min-height: 100px; resize: vertical; }
-button { width: auto; min-width: 140px; cursor: pointer; }
-ul { padding-left: 1.25rem; }
-li { margin-bottom: .7rem; line-height: 1.4; }
-.item-header { display: flex; justify-content: space-between; gap: .6rem; align-items: center; }
-.item-header span { display: inline-flex; gap: .4rem; }
-.item-header button { min-width: auto; margin: 0; padding: .3rem .45rem; }
-.muted { color: #5f6676; font-size: .9rem; }
-.actions-row { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
-.file-label { border: 1px solid #cfd7e8; padding: .5rem .7rem; border-radius: 6px; background: #fff; cursor: pointer; }
-.file-label input { display: none; }
-.danger, .danger-inline { background: #a8262e; color: #fff; border: 1px solid #8f1d25; }
+:root{--bg:#0b1020;--panel:#131a2eaa;--card:#1a233d;--line:#31406b;--text:#e7ecff;--muted:#9cabd4;--primary:#6f8cff;--danger:#bf3355}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:radial-gradient(circle at 20% 10%,#1a2750,#090d19 55%);color:var(--text)}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;gap:16px;padding:16px}
+.glass{backdrop-filter:blur(12px);background:var(--panel);border:1px solid #ffffff1f;border-radius:18px}
+.sidebar{padding:20px}.sidebar h1{margin:0}.muted{color:var(--muted)}
+nav{display:flex;flex-direction:column;gap:8px;margin-top:16px}.tab-btn{background:transparent;border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:12px;text-align:left;cursor:pointer}.tab-btn.active{background:#6f8cff33;border-color:#88a0ff}
+.content{padding:4px}.tab{display:none}.tab.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.stats{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}h2{margin:8px 0 12px}h3{margin:0 0 10px}
+input,select,textarea,button{width:100%;margin:.35rem 0;padding:.65rem .7rem;border-radius:10px;border:1px solid var(--line);background:#0f1730;color:var(--text)}
+textarea{min-height:110px;resize:vertical}button{cursor:pointer}.primary{background:var(--primary);color:white;border-color:#90a5ff}.danger{background:var(--danger);border-color:#d54f70}.actions-row{display:flex;gap:8px;flex-wrap:wrap}.actions-row>*{width:auto}
+ul{list-style:none;padding:0;margin:10px 0 0}li{border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px;background:#0f1730}
+.item-header{display:flex;justify-content:space-between;gap:8px;align-items:center}.item-header span{display:flex;gap:6px}.item-header button{width:auto;padding:.35rem .55rem;margin:0}pre{white-space:pre-wrap;background:#0f1730;border:1px solid var(--line);padding:10px;border-radius:10px;min-height:120px}
+.file-label input{display:none}
+@media (max-width:1000px){.layout{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
